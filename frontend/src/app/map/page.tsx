@@ -82,8 +82,8 @@ const page = (props: Props) => {
                     <MapComponent />
                 </div>
                 <div className='w-1/5 flex flex-col gap-4 px-4'>
-                    <h2 className='font-semibold text-center'>Filters</h2>
-                    <div>
+                    <h2 className='font-semibold text-center text-2xl'>Filters</h2>
+                    <div className='flex flex-col gap-2'>
                         <label htmlFor="type" className='text-lg font-semibold'>Type de delits</label>
                         <select
                             name="type"
@@ -99,7 +99,7 @@ const page = (props: Props) => {
                             }
                         </select>
                     </div>
-                    <div>
+                    <div className='flex flex-col gap-2'>
                         <label htmlFor="sexe" className='text-lg font-semibold'>Sexe</label>
                         <div className='flex gap-4'>
                             <div>
