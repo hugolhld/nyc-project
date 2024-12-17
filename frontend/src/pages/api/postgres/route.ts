@@ -51,7 +51,7 @@ export default async function handler(
       if (req.query.id) {
         return await getArrestById(req.query.id as string, res)
       } else {
-        return await getArrests(res)
+        return await getArrests(req, res)
       }
 
     default:
@@ -61,10 +61,42 @@ export default async function handler(
 }
 
 // Fonction pour récupérer tous les enregistrements
-async function getArrests(res: NextApiResponse<ResponseData>) {
+async function getArrests(req: NextApiRequest,res: NextApiResponse<ResponseData>) {
+
+  const { perp_sex, ofns_desc, age_group } = req.query
+
+  console.log(req.query)
+
   try {
     const client = await pool.connect()
-    const result = await client.query('SELECT * FROM arrest_data')
+
+    let query = 'SELECT * FROM arrest_data'
+    const conditions = []
+    const values = []
+
+    if (perp_sex) {
+      conditions.push(`perp_sex = $${values.length + 1}`)
+      values.push(perp_sex)
+    }
+
+    if (ofns_desc) {
+      conditions.push(`ofns_desc = $${values.length + 1}`)
+      values.push(ofns_desc)
+    }
+
+    if (age_group) {
+      conditions.push(`age_group = $${values.length + 1}`)
+      values.push(age_group)
+    }
+
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ')
+    }
+
+    console.log(query)
+    console.log(values)
+
+    const result = await client.query(query, values)
     client.release()
     res.status(200).json({ data: result.rows })
   } catch (err) {
