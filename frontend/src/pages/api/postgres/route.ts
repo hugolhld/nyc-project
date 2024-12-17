@@ -3,7 +3,7 @@ import { Pool } from 'pg'
 
 // Configuration de la connexion PostgreSQL
 const pool = new Pool({
-  host: 'localhost',  // Nom du service Docker de PostgreSQL
+  host: 'localhost',
   port: 5432,
   user: 'admin',
   password: 'adminpassword',

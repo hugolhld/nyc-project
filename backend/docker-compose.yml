@@ -16,6 +16,42 @@ services:
     networks:
       - backend_network
 
+  # PostgreSQL Exporter
+  postgres_exporter:
+    image: wrouesnel/postgres_exporter:latest
+    container_name: postgres_exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://admin:adminpassword@postgres:5432/geodb?sslmode=disable
+    ports:
+      - "9187:9187"  # Port d'écoute de l'exporter
+    networks:
+      - backend_network
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./data/prometheus.yml:/etc/prometheus.yml  # Point vers le fichier de configuration
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"  # Port d'accès à l'interface de Prometheus
+    networks:
+      - backend_network
+
+  # Grafana
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "admin"  # Mot de passe admin de Grafana
+    ports:
+      - "3001:3000"  # Port d'accès à l'interface de Grafana
+    depends_on:
+      - prometheus
+    networks:
+      - backend_network
+
   # Adminer
   adminer:
     image: adminer:latest
@@ -59,3 +95,4 @@ networks:
 volumes:
   postgres_data:
   mongo_data:
+  prometheus_data:
