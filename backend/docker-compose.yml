@@ -77,17 +77,6 @@ services:
     networks:
       - backend_network
 
-  # API Node.js
-  api:
-    build: .
-    container_name: api
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-    networks:
-      - backend_network
-
 networks:
   backend_network:
     driver: bridge
