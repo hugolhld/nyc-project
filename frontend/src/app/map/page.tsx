@@ -2,57 +2,18 @@
 
 import React from 'react'
 import MapComponent from '../components/Map'
-import { IoLocationSharp } from "react-icons/io5";
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ofns_desc } from '@/utils/utils';
+import { useSnackbar } from 'notistack';
 
-const offenseTypes = [
-    "all",
-    "ALCOHOLIC BEVERAGE CONTROL LAW",
-    "ASSAULT 3 & RELATED OFFENSES",
-    "BURGLARY",
-    "CANNABIS RELATED OFFENSES",
-    "CHILD ABANDONMENT/NON SUPPORT",
-    "CRIMINAL MISCHIEF & RELATED OF",
-    "CRIMINAL TRESPASS",
-    "DANGEROUS DRUGS",
-    "DANGEROUS WEAPONS",
-    "FELONY ASSAULT",
-    "FORGERY",
-    "FRAUDS",
-    "GRAND LARCENY",
-    "GRAND LARCENY OF MOTOR VEHICLE",
-    "HOMICIDE-NEGLIGENT,UNCLASSIFIE",
-    "INTOXICATED & IMPAIRED DRIVING",
-    "INTOXICATED/IMPAIRED DRIVING",
-    "JOSTLING",
-    "MISCELLANEOUS PENAL LAW",
-    "MURDER & NON-NEGL. MANSLAUGHTE",
-    "NYS LAWS-UNCLASSIFIED FELONY",
-    "OFF. AGNST PUB ORD SENSBLTY &",
-    "OFFENSES AGAINST PUBLIC ADMINI",
-    "OFFENSES AGAINST PUBLIC SAFETY",
-    "OFFENSES AGAINST THE PERSON",
-    "OFFENSES INVOLVING FRAUD",
-    "OTHER OFFENSES RELATED TO THEF",
-    "OTHER STATE LAWS",
-    "OTHER STATE LAWS (NON PENAL LA",
-    "OTHER TRAFFIC INFRACTION",
-    "PETIT LARCENY",
-    "POSSESSION OF STOLEN PROPERTY",
-    "RAPE",
-    "ROBBERY",
-    "SEX CRIMES",
-    "UNAUTHORIZED USE OF A VEHICLE",
-    "VEHICLE AND TRAFFIC LAWS"
-];
+const page = () => {
 
-
-type Props = {}
-
-const page = (props: Props) => {
-
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter();
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const params = useSearchParams();
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { enqueueSnackbar } = useSnackbar();
 
     const onChange = (value: string, type: string) => {
 
@@ -64,18 +25,13 @@ const page = (props: Props) => {
             return;
         }
 
-        if (value === 'M') {
-            query.delete('perp_sex');
-            router.push(`?${query.toString()}`);
-            return;
-        }
-
         query.set(type, value);
         router.push(`?${query.toString()}`);
     }
 
     return (
         <div className='w-full h-screen'>
+            <button onClick={() => enqueueSnackbar('tsst')}>test</button>
             <h1 className='text-2xl text-center font-semibold p-4'>Carte de la ville de New York et ses arrestations</h1>
             <div className='w-full h-full flex'>
                 <div className='w-4/5'>
@@ -92,8 +48,9 @@ const page = (props: Props) => {
                             value={params?.get('ofns_desc') || 'all'}
                             className='w-full p-2 border'
                         >
+                            <option value="all">All</option>
                             {
-                                offenseTypes.map((type, index) => (
+                                ofns_desc.map((type, index) => (
                                     <option key={index} value={type}>{type}</option>
                                 ))
                             }
@@ -107,10 +64,22 @@ const page = (props: Props) => {
                                     className='mr-2'
                                     type="radio"
                                     name="sexe"
+                                    id="All"
+                                    value="all"
+                                    onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
+                                    checked={params?.get('perp_sex') === 'all' || !params?.get('perp_sex')}
+                                />
+                                <label htmlFor="all">Tous</label>
+                            </div>
+                            <div>
+                                <input
+                                    className='mr-2'
+                                    type="radio"
+                                    name="sexe"
                                     id="M"
                                     value="M"
                                     onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
-                                    checked={params?.get('perp_sex') === 'M' || !params?.get('perp_sex')}
+                                    checked={params?.get('perp_sex') === 'M'}
                                 />
                                 <label htmlFor="M">Homme</label>
                             </div>
@@ -128,6 +97,22 @@ const page = (props: Props) => {
                                 <label htmlFor="F">Femme</label>
                             </div>
                         </div>
+                    </div>
+                    <div className='flex flex-col gap-2'>
+                        <label htmlFor="type" className='text-lg font-semibold'>Tranche d\âge</label>
+                        <select
+                            name="type"
+                            id="type"
+                            onChange={({ target: { value } }) => onChange(value, 'age_group')}
+                            value={params?.get('age_group') || 'all'}
+                            className='w-full p-2 border'
+                        >
+                            {
+                                ['all', '<18', '18-24', '25-44', '45-64', '65+'].map((type, index) => (
+                                    <option key={index} value={type}>{type}</option>
+                                ))
+                            }
+                        </select>
                     </div>
                 </div>
             </div>
