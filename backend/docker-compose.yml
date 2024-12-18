@@ -12,18 +12,8 @@ services:
       POSTGRES_DB: geodb
     volumes:
       - ./data/arrested.json:/docker-entrypoint-initdb.d/arrested.json
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - backend_network
-
-  # PostgreSQL Exporter
-  postgres_exporter:
-    image: wrouesnel/postgres_exporter:latest
-    container_name: postgres_exporter
-    environment:
-      - DATA_SOURCE_NAME=postgresql://admin:adminpassword@postgres:5432/geodb?sslmode=disable
-    ports:
-      - "9187:9187"  # Port d'écoute de l'exporter
     networks:
       - backend_network
 
@@ -63,25 +53,10 @@ services:
     networks:
       - backend_network
 
-  # MongoDB
-  mongodb:
-    image: mongo:6.0
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: adminpassword
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - backend_network
-
 networks:
   backend_network:
     driver: bridge
 
 volumes:
   postgres_data:
-  mongo_data:
   prometheus_data:
