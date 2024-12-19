@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NYC PROJECT 🌆 - Hugo Lhernould
 
-## Getting Started
+Welcome in my interactive map and statistics project based on Leaflet, Recharts and React! This application displays markers representing arrests and bike locations on a map. It includes a WebSocket connection for real-time updates and uses a backend to retrieve data.
 
-First, run the development server:
+### Data used 🔥
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- NYC OpenedData (criminality): [link](https://opendata.cityofnewyork.us/)
+- Stations bike of NYC: [link](https://gbfs.lyft.com/gbfs/1.1/bkn/en/station_information.json)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Technos used 🔮
+- [Next.js](https://nextjs.org/) 15.1
+- [Recharts](https://recharts.org/en-US/)
+- [Leaflet](https://react-leaflet.js.org/)
+- [MapBox](https://www.mapbox.com/)
+- Socket.io
+- [Docker](https://www.docker.com/)
+- [PostGreSQL](https://www.postgresql.org/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Installation 🧑‍💻
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone repo**
 
-## Learn More
+2. **For Backend:**
+    - Copy `./backend/.env.exemple` at root of backend folder and fill it
+    - In terminal:
+    `cd ./backend`
+    `docker compose up --build`
+    - When is finished go to `http://localhost:8080` and you can connect on Adminer
+    - Check in `geodb` if you have correctly tables `arrested_data` and `stations`
+3. **For Frontend**
+    - Copy `./frontend/.env.exemple` at root of frontend folder and fill it
+    - In terminal:
+    `cd ./frontend`
+    `npm install`
+    `npm run dev`
+    - **You can go to `http:/localhost:3000` and check your app !** :tada:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
