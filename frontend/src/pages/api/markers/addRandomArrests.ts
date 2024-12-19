@@ -1,4 +1,4 @@
-import { ofns_desc } from '@/utils/utils'
+import { ofns_desc } from '../../../utils/utils'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { pool } from '../db/database'
 import io from 'socket.io-client'
@@ -98,7 +98,7 @@ async function addRandomArrest(res: NextApiResponse) {
   try {
     const client = await pool.connect();
 
-    const result = await client.query(
+    await client.query(
       `INSERT INTO arrest_data (
           arrest_key, arrest_date, pd_cd, pd_desc, ky_cd, ofns_desc, law_code, law_cat_cd,
           arrest_boro, arrest_precinct, jurisdiction_code, age_group, perp_sex, perp_race,
@@ -141,71 +141,3 @@ async function addRandomArrest(res: NextApiResponse) {
     res.status(500).json({ message: "Erreur lors de l'ajout de l'arrestation aléatoire" });
   }
 };
-
-async function addArrest(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-  const {
-    arrest_date,
-    pd_cd,
-    pd_desc,
-    ky_cd,
-    ofns_desc,
-    law_code,
-    law_cat_cd,
-    arrest_boro,
-    arrest_precinct,
-    jurisdiction_code,
-    age_group,
-    perp_sex,
-    perp_race,
-    x_coord_cd,
-    y_coord_cd,
-    latitude,
-    longitude,
-    lon_lat,
-  } = req.body;
-
-  if (!arrest_date || !latitude || !longitude || !ofns_desc) {
-    return res.status(400).json({ message: 'Certains champs obligatoires sont manquants.' });
-  }
-
-  try {
-    const client = await pool.connect();
-    const result = await client.query(
-      `INSERT INTO arrest_data (
-        arrest_key, arrest_date, pd_cd, pd_desc, ky_cd, ofns_desc, law_code, law_cat_cd, arrest_boro,
-        arrest_precinct, jurisdiction_code, age_group, perp_sex, perp_race, x_coord_cd,
-        y_coord_cd, latitude, longitude, geom
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,
-        $18, ST_GeomFromGeoJSON($19)
-      ) RETURNING *`,
-      [
-        Math.floor(Math.random() * 1000000),
-        arrest_date,
-        pd_cd,
-        pd_desc,
-        ky_cd,
-        ofns_desc,
-        law_code,
-        law_cat_cd,
-        arrest_boro,
-        arrest_precinct,
-        jurisdiction_code,
-        age_group,
-        perp_sex,
-        perp_race,
-        x_coord_cd,
-        y_coord_cd,
-        latitude,
-        longitude,
-        JSON.stringify(lon_lat),
-      ]
-    );
-
-    client.release();
-    res.status(201).json({ data: result.rows[0] });
-  } catch (err) {
-    console.error('Erreur lors de l\'ajout de l\'enregistrement:', err);
-    res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'enregistrement' });
-  }
-}

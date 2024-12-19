@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import BarChart from '../components/BarChart';
 import { Bar } from 'recharts';
+import { useSnackbar } from 'notistack';
 
 const Offense = () => {
 
     const [data, setData] = useState([]);
     const [ageGroups, setAgeGroups] = useState<string[]>([]);
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         fetch('http://localhost:3000/api/statistics/getCountArrestsByOffenseAndAge')
@@ -21,8 +23,8 @@ const Offense = () => {
                     setAgeGroups(ageKeys);
                 }
             })
-            .catch((error) => console.error('Error during request:', error));
-    }, []);
+            .catch((error) => enqueueSnackbar(error, { variant: 'error' }));
+    }, [enqueueSnackbar]);
 
     return (
         <BarChart data={data}>

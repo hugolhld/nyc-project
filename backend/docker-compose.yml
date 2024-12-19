@@ -12,33 +12,9 @@ services:
       POSTGRES_DB: geodb
     volumes:
       - ./data/arrested.json:/docker-entrypoint-initdb.d/arrested.json
+      - ./data/bikes-nyc.json:/docker-entrypoint-initdb.d/bikes-nyc.json
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - backend_network
-
-  # Prometheus
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./data/prometheus.yml:/etc/prometheus.yml  # Point vers le fichier de configuration
-      - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"  # Port d'accès à l'interface de Prometheus
-    networks:
-      - backend_network
-
-  # Grafana
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: "admin"  # Mot de passe admin de Grafana
-    ports:
-      - "3001:3000"  # Port d'accès à l'interface de Grafana
-    depends_on:
-      - prometheus
     networks:
       - backend_network
 
@@ -47,7 +23,7 @@ services:
     image: adminer:latest
     container_name: adminer
     ports:
-      - "8080:8080" # Adminer sera accessible sur http://localhost:8080
+      - "8080:8080"
     depends_on:
       - postgres
     networks:
@@ -59,4 +35,3 @@ networks:
 
 volumes:
   postgres_data:
-  prometheus_data:

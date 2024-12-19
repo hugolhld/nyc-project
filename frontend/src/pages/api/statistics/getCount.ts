@@ -1,35 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { pool } from '../db/database';
 
-type ArrestData = {
-    arrest_key: string;
-    arrest_date: string;
-    pd_cd: string;
-    pd_desc: string;
-    ky_cd: string;
-    ofns_desc: string;
-    law_code: string;
-    law_cat_cd: string;
-    arrest_boro: string;
-    arrest_precinct: string;
-    jurisdiction_code: string;
-    age_group: string;
-    perp_sex: string;
-    perp_race: string;
-    x_coord_cd: string;
-    y_coord_cd: string;
-    latitude: string;
-    longitude: string;
-    lon_lat: {
-        type: string;
-        coordinates: [number, number];
-    };
+type data = {
+    name: string;
+    value: number;
 };
 
 type ResponseData = {
     success?: boolean;
     message?: string;
-    data?: ArrestData | ArrestData[];
+    data?: data | data[];
 };
 
 export default async function handler(
