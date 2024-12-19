@@ -12,7 +12,7 @@ const Offense = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/statistics/getCountArrestsByOffenseAndAge')
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/statistics/getCountArrestsByOffenseAndAge`)
             .then((response) => response.json())
             .then(({ data }) => {
                 setData(data);

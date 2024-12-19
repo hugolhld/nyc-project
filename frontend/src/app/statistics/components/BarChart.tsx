@@ -1,5 +1,4 @@
-import { useRouter } from 'next/navigation';
-import { PureComponent, useState } from 'react';
+import { PureComponent } from 'react';
 import {
     BarChart as INITBarChart,
     XAxis,
@@ -32,27 +31,6 @@ type BarChartProps = {
 };
 
 const BarChart = ({ data, children, ...props }: BarChartProps) => {
-
-    const router = useRouter();
-
-    const [opacity, setOpacity] = useState({
-        count: 1,
-        offense: 1,
-    });
-
-
-    const onMouseEnter = (o) => {
-        const { dataKey } = o;
-
-        setOpacity((op) => ({ ...op, [dataKey]: 0.5 }));
-    };
-
-    const onMouseLeave = (o) => {
-        const { dataKey } = o;
-
-        setOpacity((op) => ({ ...op, [dataKey]: 1 }));
-    };
-
     return (
         <ResponsiveContainer width="100%" height={600}>
             <INITBarChart
@@ -71,7 +49,7 @@ const BarChart = ({ data, children, ...props }: BarChartProps) => {
                 <XAxis dataKey="name" interval={0} height={150} tick={<CustomizedAxisTick />} />
                 <YAxis />
                 <Tooltip />
-                <Legend onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} height={50} align='center' margin={{ top: 1000, left: 0, right: 0, bottom: 0 }} />
+                <Legend height={50} align='center' margin={{ top: 1000, left: 0, right: 0, bottom: 0 }} />
 
                 {children}
             </INITBarChart>

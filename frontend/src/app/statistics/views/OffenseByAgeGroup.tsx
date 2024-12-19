@@ -9,7 +9,7 @@ const OffenseByAgeGroup = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/statistics/getCount?type=age_group${query ? `&${query}` : ''}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/statistics/getCount?type=age_group${query ? `&${query}` : ''}`)
             .then((response) => response.json())
             .then(({ data }) => setData(data))
             .catch((error) => enqueueSnackbar(error, { variant: 'error' }));

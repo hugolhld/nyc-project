@@ -34,7 +34,7 @@ type ResponseData = {
   data?: ArrestData | ArrestData[]
 }
 
-const socket = io('http://localhost:3000');
+const socket = io(`${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}`);
 
 export default async function handler(
   req: NextApiRequest,

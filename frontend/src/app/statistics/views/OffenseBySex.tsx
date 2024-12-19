@@ -10,7 +10,7 @@ const OffenseBySex = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/statistics/getCount?type=perp_sex${query ? `&${query}` : ''}`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/statistics/getCount?type=perp_sex${query ? `&${query}` : ''}`)
             .then((response) => response.json())
             .then(({ data }) => setData(data))
             .catch((error) => enqueueSnackbar(error, { variant: 'error' }));

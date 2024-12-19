@@ -3,8 +3,8 @@ import express from "express";
 import next from "next";
 import { Server } from "socket.io";
 
-const hostname = "localhost";
-const port = 3000;
+const hostname = process.env.HOSTNAME || 'localhost';
+const port = parseInt(process.env.PORT || '3000', 10);
 
 const app = next({ dev: true, hostname, port });
 const handle = app.getRequestHandler();
@@ -40,6 +40,7 @@ app.prepare().then(() => {
     });
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   expressApp.all('*', (req: any, res: any) => {
     return handle(req, res);
   });

@@ -13,6 +13,24 @@ import io from 'socket.io-client';
 import { useSnackbar } from 'notistack';
 import { MdOutlinePedalBike } from 'react-icons/md';
 
+type MapMarker = {
+    arrest_key: number;
+    age_group: string;
+    arrest_date: Date;
+    position: [number, number];
+    perp_sex: string;
+    ofns_desc: string;
+};
+
+interface BikeMarker {
+    station_id: number;
+    name: string;
+    position: [number, number];
+    capacity: number;
+    lat?: number;
+    lon?: number;
+}
+
 const LocationIconComponent = () => {
     return (
         <div className='h-full flex justify-center items-center'>
@@ -40,14 +58,13 @@ const createCustomIcon = (isLocation: boolean) => {
     });
 };
 
-export default function MapComponent() {
-    const [mapMarkers, setMapMarkers] = useState<[number, number][]>([]);
-    const [bikesMarkers, setBikesMarkers] = useState<[number, number][]>([]);
+export default function MapComponent({ dataToDisplay }: { dataToDisplay: string }) {
+    const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]);
+    const [bikesMarkers, setBikesMarkers] = useState<BikeMarker[]>([]);
     const { enqueueSnackbar } = useSnackbar();
     const query = useSearchParams();
 
     useEffect(() => {
-        // Fetch périodique
         const fetchRouteData = async () => {
             try {
                 await fetch('/api/markers/addRandomArrests', {
@@ -76,14 +93,11 @@ export default function MapComponent() {
             ofns_desc: string;
         };
 
-        const fetchMarkers = async () => {
-            try {
-                const response = await fetch(`/api/markers/getArrests${query ? `?${query}` : ''}`);
-                const { data } = await response.json();
+        fetch(`/api/markers/getArrests${query ? `?${query}` : ''}`)
+            .then((response) => response.json())
+            .then(({ data }) => {
                 if (data) {
-                    console.log(data)
                     const markers = data.map(({ arrest_key, age_group, arrest_date, latitude, longitude, perp_sex, ofns_desc }: MarkerData) => {
-                        console.log(new Date(arrest_date))
                         return {
                             arrest_key,
                             position: [latitude, longitude],
@@ -95,48 +109,42 @@ export default function MapComponent() {
                     });
                     setMapMarkers(markers);
                 }
-            } catch (error) {
+            })
+            .catch((error) => {
                 enqueueSnackbar('Erreur lors de la récupération des marqueurs', { variant: 'error' });
                 console.error('Error fetching markers:', error);
-            }
-        };
+            });
 
-        const fetchBikes = async () => {
-            try {
-                const response = await fetch(`/api/bikes/getBikes`);
-                const { data } = await response.json();
+        fetch(`/api/bikes/getBikes`)
+            .then((response) => response.json())
+            .then(({ data }) => {
                 if (data) {
-                    console.log(data)
-                    const markers = data.map(({ id, name, lat, lon }: { id: number, name: string, lat: number, lon: number }) => {
+                    const markers = data.map(({ station_id, name, lat, lon, capacity }: BikeMarker) => {
                         return {
-                            id,
+                            station_id,
                             position: [lat, lon],
                             name,
+                            capacity
                         }
                     });
+                    console.log(markers)
                     setBikesMarkers(markers);
                 }
-            } catch (error) {
+            })
+            .catch((error) => {
                 enqueueSnackbar('Erreur lors de la récupération des marqueurs des vélos', { variant: 'error' });
                 console.error('Error fetching markers:', error);
-            }
-        }
-
-        fetchMarkers();
-        fetchBikes();
+            });
     }, [query, enqueueSnackbar]);
 
     useEffect(() => {
-        // Connexion Socket.IO
-        const socket = io('http://localhost:3000');
+        const socket = io(`${process.env.NEXT_PUBLIC_HOSTNAME}:${process.env.NEXT_PUBLIC_PORT}`);
 
         socket.on('connect', () => {
-            console.log('Connecté au serveur Socket.IO');
-            socket.emit('message', 'Hello from the client!');
             enqueueSnackbar('Connecté au serveur Socket.IO', { variant: 'success' });
         });
 
-        socket.on('new_arrest', (data: object) => {
+        socket.on('new_arrest', (data: MapMarker) => {
             setMapMarkers((prevMarkers) => [...prevMarkers, { arrest_key: data.arrest_key, age_group: data.age_group, arrest_date: new Date(data.arrest_date), position: [data.latitude, data.longitude], perp_sex: data.perp_sex, ofns_desc: data.ofns_desc }]);
             enqueueSnackbar('Nouvelle arrestation !', { variant: 'success' });
         });
@@ -146,14 +154,7 @@ export default function MapComponent() {
         };
     }, [enqueueSnackbar]);
 
-    type MapMarker = {
-        arrest_key: number;
-        age_group: string;
-        arrest_date: Date;
-        position: [number, number];
-        perp_sex: string;
-        ofns_desc: string;
-    };
+    
 
     return (
         <MapContainer
@@ -167,7 +168,7 @@ export default function MapComponent() {
                 accessToken="pk.eyJ1IjoiaHVnb2xobGQiLCJhIjoiY2x2NTA2bHphMGJ4cjJxbzlyNjN6ZTF5YyJ9.zeBXs_6aXxSALqh5O768eg"
             />
             <MarkerClusterGroup>
-                {mapMarkers.map(({ arrest_key, age_group, arrest_date, position, perp_sex, ofns_desc }, index) => (
+                {dataToDisplay !== 'bikes' && mapMarkers.map(({ arrest_key, age_group, arrest_date, position, perp_sex, ofns_desc }, index) => (
                     <Marker
                         key={index}
                         position={position}
@@ -175,8 +176,8 @@ export default function MapComponent() {
                     >
                         <Popup>
                             <div>
-                                <h2 className='text-md font-semibold text-center'>Arrestation #{arrest_key}</h2>
-                                <p>Offenses: {ofns_desc}</p>
+                                <h2 className='text-md font-semibold text-center'>Offense #{arrest_key}</h2>
+                                <p>Offense type: {ofns_desc}</p>
                                 <p>Date: {arrest_date.toUTCString()}</p>
                                 <p>Age: {age_group}</p>
                                 <p>Sex: {perp_sex}</p>
@@ -184,16 +185,17 @@ export default function MapComponent() {
                         </Popup>
                     </Marker>
                 ))}
-               {bikesMarkers.map(({ id, name, position }, index) => (
+                {dataToDisplay !== 'offenses' && bikesMarkers.map(({ station_id, name, position, capacity }: BikeMarker) => (
                     <Marker
-                        key={index}
+                        key={station_id}
                         position={position}
                         icon={createCustomIcon(false)}
                     >
                         <Popup>
                             <div>
-                                <h2 className='text-md font-semibold text-center'>Vélo #{id}</h2>
-                                <p>Nom: {name}</p>
+                                <h2 className='text-md font-semibold text-center'>Station #{station_id}</h2>
+                                <p>Street name: {name}</p>
+                                <p>Bike capacity: {capacity}</p>
                             </div>
                         </Popup>
                     </Marker>
