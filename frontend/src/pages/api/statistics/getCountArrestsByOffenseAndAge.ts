@@ -1,6 +1,4 @@
-import { ofns_desc } from '@/utils/utils';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import io from 'socket.io-client';
 import { pool } from '../db/database';
 
 type ArrestData = {
@@ -31,10 +29,8 @@ type ArrestData = {
 type ResponseData = {
     success?: boolean;
     message?: string;
-    data?: ArrestData | ArrestData[] | any;
+    data?: ArrestData | ArrestData[];
 };
-
-// const socket = io('http://localhost:3000');
 
 export default async function handler(
     req: NextApiRequest,
@@ -44,11 +40,7 @@ export default async function handler(
 
     switch (method) {
         case 'GET':
-            if (req.query.sex) {
-                return getCountBySex(req, res);
-            } else {
-                return getCountArrestsByOffenseAndAge(req, res);
-            }
+            return getCountArrestsByOffenseAndAge(req, res);
 
         default:
             res.status(405).json({ message: 'Méthode non autorisée' });
@@ -57,7 +49,7 @@ export default async function handler(
 }
 
 async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-    const { perp_sex, ofns_desc, age_group } = req.query;
+    const { perp_sex } = req.query;
 
     let query = `
         SELECT 
@@ -67,21 +59,12 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
         FROM arrest_data
     `;
     const conditions: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const values: any[] = [];
 
     if (perp_sex) {
         conditions.push(`perp_sex = $${values.length + 1}`);
         values.push(perp_sex);
-    }
-
-    if (ofns_desc) {
-        conditions.push(`ofns_desc ILIKE $${values.length + 1}`);
-        values.push(`%${ofns_desc}%`);
-    }
-
-    if (age_group) {
-        conditions.push(`age_group = $${values.length + 1}`);
-        values.push(age_group);
     }
 
     query += `
@@ -94,6 +77,7 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
         const result = await pool.query(query, values);
 
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data = result.rows.reduce((acc: any[], row: any) => {
             const existing = acc.find((item) => item.name === row.offense);
 
@@ -127,37 +111,3 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
         });
     }
 }
-
-
-async function getCountBySex(
-    req: NextApiRequest,
-    res: NextApiResponse<ResponseData>
-  ) {
-    try {
-      const query = `
-        SELECT 
-          perp_sex as name,
-          CAST(COUNT(*) AS INTEGER) AS value
-        FROM 
-          arrest_data
-        GROUP BY 
-          perp_sex
-        ORDER BY 
-          value DESC;
-      `;
-  
-      const result = await pool.query(query);
-  
-      res.status(200).json({
-        success: true,
-        data: result.rows, // Chaque ligne contient `perp_sex` et `total_offenses`.
-      });
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Erreur interne du serveur',
-      });
-    }
-  }
-  

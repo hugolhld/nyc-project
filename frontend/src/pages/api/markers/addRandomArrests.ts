@@ -1,16 +1,8 @@
 import { ofns_desc } from '@/utils/utils'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Pool } from 'pg'
+import { pool } from '../db/database'
 import io from 'socket.io-client'
 
-// Configuration de la connexion PostgreSQL
-const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  user: 'admin',
-  password: 'adminpassword',
-  database: 'geodb',
-})
 
 type ArrestData = {
   arrest_key: string
@@ -51,86 +43,16 @@ export default async function handler(
   const { method } = req
 
   switch (method) {
-    case 'GET':
-      if (req.query.id) {
-        return await getArrestById(req.query.id as string, res)
-      } else {
-        return await getArrests(req, res)
-      }
-
     case 'POST':
-      if(req.query.random) {
+      // if(req.query.random) {
         return await addRandomArrest(res)
-      } else {
-        return await addArrest(req, res)
-      }
+      // } else {
+      //   return await addArrest(req, res)
+      // }
 
     default:
       res.status(405).json({ message: 'Méthode non autorisée' })
       break
-  }
-}
-
-// Fonction pour récupérer tous les enregistrements
-async function getArrests(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-
-  const { perp_sex, ofns_desc, age_group } = req.query
-
-  console.log(req.query)
-
-  try {
-    const client = await pool.connect()
-
-    let query = 'SELECT * FROM arrest_data'
-    const conditions = []
-    const values = []
-
-    if (perp_sex) {
-      conditions.push(`perp_sex = $${values.length + 1}`)
-      values.push(perp_sex)
-    }
-
-    if (ofns_desc) {
-      conditions.push(`ofns_desc = $${values.length + 1}`)
-      values.push(ofns_desc)
-    }
-
-    if (age_group) {
-      conditions.push(`age_group = $${values.length + 1}`)
-      values.push(age_group)
-    }
-
-    if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ')
-    }
-
-    console.log(query)
-    console.log(values)
-
-    const result = await client.query(query, values)
-    client.release()
-    res.status(200).json({ data: result.rows })
-  } catch (err) {
-    console.error('Erreur lors de la récupération des données:', err)
-    res.status(500).json({ message: 'Erreur lors de la récupération des données' })
-  }
-}
-
-// Fonction pour récupérer un enregistrement spécifique par son id
-async function getArrestById(id: string, res: NextApiResponse<ResponseData>) {
-  try {
-    const client = await pool.connect()
-    const result = await client.query('SELECT * FROM arrest_data WHERE arrest_key = $1', [id])
-    client.release()
-
-    if (result.rows.length > 0) {
-      res.status(200).json({ data: result.rows[0] })
-    } else {
-      res.status(404).json({ message: 'Enregistrement non trouvé' })
-    }
-  } catch (err) {
-    console.error('Erreur lors de la récupération de l\'enregistrement:', err)
-    res.status(500).json({ message: 'Erreur lors de la récupération de l\'enregistrement' })
   }
 }
 
@@ -211,18 +133,6 @@ async function addRandomArrest(res: NextApiResponse) {
     socket.emit('new_arrest', data);
     socket.emit('message', 'hello from api');
 
-    console.log('go socket')
-
-    // io.emit('new_arrest', data);
-
-    // const socket = io('http://localhost:3000');
-    // socket.emit('message', 'hello from api');
-    // socket.emit('new_arrest', data);
-    // socket.emit('new_arrest', data);
-
-
-    // broadcast({ type: 'new_arrest', data });
-
     client.release();
     res.status(201).json({ message: "Arrestation aléatoire ajoutée", data });
     console.log("Arrest ajouté :", data.arrest_key);
@@ -254,7 +164,6 @@ async function addArrest(req: NextApiRequest, res: NextApiResponse<ResponseData>
     lon_lat,
   } = req.body;
 
-  // Validation de base
   if (!arrest_date || !latitude || !longitude || !ofns_desc) {
     return res.status(400).json({ message: 'Certains champs obligatoires sont manquants.' });
   }

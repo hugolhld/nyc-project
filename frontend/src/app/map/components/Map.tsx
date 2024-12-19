@@ -40,7 +40,7 @@ export default function MapComponent() {
         // Fetch périodique
         const fetchRouteData = async () => {
             try {
-                await fetch('/api/postgres/route?random=true', {
+                await fetch('/api/markers/addRandomArrests', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -58,7 +58,7 @@ export default function MapComponent() {
         // Fetch des marqueurs
         const fetchMarkers = async () => {
             try {
-                const response = await fetch(`/api/postgres/route${query ? `?${query}` : ''}`);
+                const response = await fetch(`/api/markers/getArrests${query ? `?${query}` : ''}`);
                 const data = await response.json();
                 if (data.data) {
                     const markers = data.data.map((point: [number, number][]) => [point.latitude, point.longitude]);

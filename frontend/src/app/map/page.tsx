@@ -5,12 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ofns_desc } from '@/utils/utils';
 // import { useSnackbar } from 'notistack';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { SnackbarProvider } from 'notistack';
-
-// const MapComponent = dynamic(() => import('./components/Map'), {
-//     ssr: false, // Désactive le rendu côté serveur
-// });
 
 const page = () => {
 
