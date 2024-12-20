@@ -56,8 +56,6 @@ async function getStations(req: NextApiRequest, res: NextApiResponse<ResponseDat
 
   const { perp_sex, ofns_desc, age_group } = req.query
 
-  console.log(req.query)
-
   try {
     const client = await pool.connect()
 
@@ -83,9 +81,6 @@ async function getStations(req: NextApiRequest, res: NextApiResponse<ResponseDat
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ')
     }
-
-    console.log(query)
-    console.log(values)
 
     const result = await client.query(query, values)
     client.release()

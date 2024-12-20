@@ -18,8 +18,6 @@ export default async function handler(
 ) {
     const { method } = req;
 
-    console.log(req.body.type)
-
     switch (method) {
         case 'GET':
             return getCount(req, res);

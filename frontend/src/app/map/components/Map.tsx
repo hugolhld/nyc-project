@@ -127,7 +127,6 @@ export default function MapComponent({ dataToDisplay }: { dataToDisplay: string 
                             capacity
                         }
                     });
-                    console.log(markers)
                     setBikesMarkers(markers);
                 }
             })

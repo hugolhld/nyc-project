@@ -135,7 +135,6 @@ async function addRandomArrest(res: NextApiResponse) {
 
     client.release();
     res.status(201).json({ message: "Arrestation aléatoire ajoutée", data });
-    console.log("Arrest ajouté :", data.arrest_key);
   } catch (err) {
     console.error("Erreur lors de l'ajout de l'arrestation aléatoire :", err);
     res.status(500).json({ message: "Erreur lors de l'ajout de l'arrestation aléatoire" });

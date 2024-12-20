@@ -15,7 +15,6 @@ const NavButton = ({ href, children, isActive, onClick }: { href: string, childr
 
 const Header = () => {
     const [pathname, setPathname] = useState(window.location.pathname);
-    console.log(pathname)
 
     return (
         <header className='bg-white-600 p-4 flex justify-between items-center  shadow-lg'>
