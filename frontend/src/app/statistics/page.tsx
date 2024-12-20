@@ -52,7 +52,7 @@ const page = () => {
                                 id=""
                                 onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
                                 value={params?.get('perp_sex') || 'all'}
-                                className="w-1/4 mx-auto p-2 border text-slate-600"
+                                className="w-1/4 mx-auto p-2 border text-slate-600 shadow-lg"
                             >
                                 <option value="all">All</option>
                                 <option value="M">Male</option>
@@ -66,7 +66,7 @@ const page = () => {
                         <select
                             id="offenses"
                             name="offenses"
-                            className="w-1/4 mx-auto p-2 border text-slate-600"
+                            className="w-1/4 mx-auto p-2 border text-slate-600 shadow-lg"
                             onChange={({ target: { value } }) => onChange(value, 'ofns_desc')}
                             value={params?.get('ofns_desc') || 'all'}
                         >

@@ -5,13 +5,12 @@ import 'leaflet/dist/leaflet.css';
 import 'react-leaflet-markercluster/styles';
 import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { IoLocationSharp } from "react-icons/io5";
 import { renderToString } from 'react-dom/server';
 import { useSearchParams } from 'next/navigation';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import io from 'socket.io-client';
 import { useSnackbar } from 'notistack';
-import { MdOutlinePedalBike } from 'react-icons/md';
+import { MdLocalPolice, MdOutlinePedalBike } from 'react-icons/md';
 
 type MapMarker = {
     arrest_key: number;
@@ -34,7 +33,7 @@ interface BikeMarker {
 const LocationIconComponent = () => {
     return (
         <div className='h-full flex justify-center items-center'>
-            <IoLocationSharp size={30} color='red' />
+            <MdLocalPolice size={30} color='#112255' />
         </div>
     );
 };
@@ -42,7 +41,7 @@ const LocationIconComponent = () => {
 const BikeIconComponent = () => {
     return (
         <div className='h-full flex justify-center items-center'>
-            <MdOutlinePedalBike size={30} color='blue' />
+            <MdOutlinePedalBike size={30} color='#c77e7e' />
         </div>
     );
 }
@@ -163,8 +162,8 @@ export default function MapComponent({ dataToDisplay }: { dataToDisplay: string 
         >
             <TileLayer
                 url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
-                id="mapbox/streets-v11"
-                accessToken="pk.eyJ1IjoiaHVnb2xobGQiLCJhIjoiY2x2NTA2bHphMGJ4cjJxbzlyNjN6ZTF5YyJ9.zeBXs_6aXxSALqh5O768eg"
+                id="mapbox/light-v11"
+                accessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
             />
             <MarkerClusterGroup>
                 {dataToDisplay !== 'bikes' && mapMarkers.map(({ arrest_key, age_group, arrest_date, position, perp_sex, ofns_desc }, index) => (

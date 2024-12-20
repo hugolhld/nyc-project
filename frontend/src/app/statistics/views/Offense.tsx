@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from 'react'
 import BarChart from '../components/BarChart';
-import { Bar } from 'recharts';
+import { Bar, Legend, Tooltip } from 'recharts';
 import { useSnackbar } from 'notistack';
 import { useSearchParams } from 'next/navigation';
 
 const COLORS = ['#6D7AFC', '#BD6DFC', '#8E6DFC', '#6DA7FC', '#CFC1FC'];
+const AGE_GROUPS_TO_LABELS = {
+    age_18_24: '18-24',
+    age_25_44: '25-44',
+    age_45_64: '45-64',
+    age_65_plus: '65+',
+    age__18: '<18',
+};
 
 const Offense = () => {
 
@@ -37,10 +44,20 @@ const Offense = () => {
                     key={index}
                     dataKey={ageGroup}
                     stackId="a"
-                    // fill={`#${Math.floor(Math.random() * 16777215).toString(16)}`} // Couleur aléatoire
                     fill={COLORS[index]}
                 />
             ))}
+            <Legend
+                formatter={(value: keyof typeof AGE_GROUPS_TO_LABELS) =>
+                    AGE_GROUPS_TO_LABELS[value]
+                }
+            />
+            <Tooltip
+                formatter={(value: number | string, name: keyof typeof AGE_GROUPS_TO_LABELS) => [
+                    value,
+                    AGE_GROUPS_TO_LABELS[name],
+                ]}
+            />
         </BarChart>
 
     )

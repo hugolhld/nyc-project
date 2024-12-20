@@ -1,11 +1,9 @@
-import { PureComponent } from 'react';
+import { PureComponent, ReactNode } from 'react';
 import {
     BarChart as INITBarChart,
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip,
-    Legend,
     ResponsiveContainer,
 } from 'recharts';
 
@@ -16,7 +14,7 @@ class CustomizedAxisTick extends PureComponent {
 
         return (
             <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={16} textAnchor="end" fill="#fff" transform="rotate(-35)" className='text-xs '>
+                <text x={0} y={0} dy={16} textAnchor="end" fill="#000" transform="rotate(-35)" className='text-xs'>
                     {payload.value}
                 </text>
             </g>
@@ -26,7 +24,7 @@ class CustomizedAxisTick extends PureComponent {
 
 type BarChartProps = {
     data: object[],
-    children: JSX.Element[],
+    children: ReactNode
     props?: object
 };
 
@@ -46,11 +44,8 @@ const BarChart = ({ data, children, ...props }: BarChartProps) => {
                 {...props}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" interval={0} height={150} tick={<CustomizedAxisTick />} stroke='#fff' color='#fff' />
-                <YAxis stroke='#fff' />
-                <Tooltip />
-                <Legend height={50} align='center' margin={{ top: 1000, left: 0, right: 0, bottom: 0 }} />
-
+                <XAxis dataKey="name" interval={0} height={150} tick={<CustomizedAxisTick />} stroke='#000' color='#000' />
+                <YAxis stroke='#000' />
                 {children}
             </INITBarChart>
         </ResponsiveContainer>
