@@ -48,7 +48,12 @@ export default async function handler(
     }
 }
 
-async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
+async function getCountArrestsByOffenseAndAge(
+    req: NextApiRequest,
+    res: NextApiResponse<ResponseData>
+) {
+    const defaultAgeGroups = ['<18', '25-44', '45-64', '65+'];
+
     const { perp_sex } = req.query;
 
     let query = `
@@ -76,7 +81,6 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
     try {
         const result = await pool.query(query, values);
 
-
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data = result.rows.reduce((acc: any[], row: any) => {
             const existing = acc.find((item) => item.name === row.offense);
@@ -84,7 +88,7 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
             const ageGroupKey = `age_${row.age_group.replace('-', '_').replace('<', '_').replace('+', '_plus')}`;
 
             if (existing) {
-                // Ajoute le compte à la tranche d'âge et met à jour le total
+                // Ajoute le compte à la tranche d'âge existante
                 existing[ageGroupKey] = (existing[ageGroupKey] || 0) + parseInt(row.count, 10);
                 existing.total += parseInt(row.count, 10);
             } else {
@@ -98,10 +102,20 @@ async function getCountArrestsByOffenseAndAge(req: NextApiRequest, res: NextApiR
             return acc;
         }, []);
 
+        // Ajoute les tranches d'âge manquantes avec des valeurs par défaut (0)
+        const enrichedData = data.map((offense) => {
+            defaultAgeGroups.forEach((ageGroup) => {
+                const ageGroupKey = `age_${ageGroup.replace('-', '_').replace('<', '_').replace('+', '_plus')}`;
+                if (!(ageGroupKey in offense)) {
+                    offense[ageGroupKey] = 0; // Initialise à 0 si la tranche d'âge est absente
+                }
+            });
+            return offense;
+        });
 
         res.status(200).json({
             success: true,
-            data,
+            data: enrichedData,
         });
     } catch (error) {
         console.error('Erreur lors de la récupération des données :', error);

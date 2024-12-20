@@ -8,6 +8,21 @@ import Link from 'next/link';
 import { SnackbarProvider } from 'notistack';
 import { useState } from 'react';
 
+const Radio = ({ name, value, onChange, checked, title }) => (
+    <div className='flex gap-1 items-center'>
+        <input
+            className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+            type="radio"
+            name={name}
+            id={value}
+            value={value}
+            onChange={onChange}
+            checked={checked}
+        />
+        <label htmlFor={value}>{title}</label>
+    </div>
+)
+
 const page = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [dataToDisplay, setDataToDisplay] = useState('all');
@@ -35,58 +50,39 @@ const page = () => {
 
     return (
         <SnackbarProvider>
-            <div className='w-full h-screen'>
-                <div className='relative flex justify-between items-center'>
-                    <Link href={'/'} className='w-1/5 top-0 left-0 p-4'>
-                        Retour
-                    </Link>
-                    <h1 className='w-3/5 text-center text-2xl font-semibold p-4'>Carte de la ville de New York et ses arrestations</h1>
-                    <Link href={'/statistics'} className='w-1/5  text-end top-0 right-0 p-4'>
-                        Statistiques
-                    </Link>
-                </div>
+            <div className='w-full h-full bg-slate-500 text-white'>
                 <div className='w-full h-full flex'>
-                    <div className='w-4/5'>
+                    <div className='w-4/5 shadow-lg'>
                         <MapComponent dataToDisplay={dataToDisplay} />
                     </div>
-                    <div className='w-1/5 flex flex-col gap-4 px-4'>
+                    <div className='w-1/5 flex flex-col gap-4 p-4'>
                         <h2 className='font-semibold text-center text-2xl'>Filters</h2>
-
                         <div className='flex flex-col gap-2'>
                             <h3 className='text-lg font-semibold'>Select data to display</h3>
                             <div className='flex gap-2'>
-                                <div className='flex gap-1 items-center'>
-                                    <input
-                                        type="radio"
-                                        name="all"
-                                        id="all"
-                                        onChange={() => setDataToDisplay('all')}
-                                        checked={dataToDisplay === 'all'}
-                                    />
-                                    <label htmlFor="">All</label>
-                                </div>
+                                <Radio
+                                    name='all'
+                                    value='all'
+                                    title='All'
+                                    onChange={({ target: { value } }) => setDataToDisplay(value)}
+                                    checked={dataToDisplay === 'all'}
+                                />
 
-                                <div className='flex gap-1 items-center'>
-                                    <input
-                                        type="radio"
-                                        name="offenses"
-                                        id="offenses"
-                                        onChange={() => setDataToDisplay('offenses')}
-                                        checked={dataToDisplay === 'offenses'}
-                                    />
-                                    <label htmlFor="offenses">Offenses</label>
-                                </div>
+                                <Radio
+                                    name='offenses'
+                                    value='offenses'
+                                    title='Offenses'
+                                    onChange={({ target: { value } }) => setDataToDisplay(value)}
+                                    checked={dataToDisplay === 'offenses'}
+                                />
 
-                                <div className='flex gap-1 items-center'>
-                                    <input
-                                        type="radio"
-                                        name="bikes"
-                                        id="bikes"
-                                        onChange={() => setDataToDisplay('bikes')}
-                                        checked={dataToDisplay === 'bikes'}
-                                    />
-                                    <label htmlFor="bikes">Bikes stations</label>
-                                </div>
+                                <Radio
+                                    name='bikes'
+                                    value='bikes'
+                                    title='Bikes stations'
+                                    onChange={({ target: { value } }) => setDataToDisplay(value)}
+                                    checked={dataToDisplay === 'bikes'}
+                                />
                             </div>
                         </div>
 
@@ -99,7 +95,7 @@ const page = () => {
                                     id="type"
                                     onChange={({ target: { value } }) => onChange(value, 'ofns_desc')}
                                     value={params?.get('ofns_desc') || 'all'}
-                                    className='w-full p-2 border'
+                                    className='w-full p-2 border shadow-lg text-slate-600'
                                 >
                                     <option value="all">All</option>
                                     {
@@ -110,45 +106,32 @@ const page = () => {
                                 </select>
                             </div>
                             <div className='flex flex-col gap-2'>
-                                <label htmlFor="sexe" className='text-lg font-semibold'>Sex</label>
+                                <label htmlFor="gender" className='text-lg font-semibold'>Gender</label>
                                 <div className='flex gap-4'>
-                                    <div>
-                                        <input
-                                            className='mr-2'
-                                            type="radio"
-                                            name="sexe"
-                                            id="All"
-                                            value="all"
-                                            onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
-                                            checked={params?.get('perp_sex') === 'all' || !params?.get('perp_sex')}
-                                        />
-                                        <label htmlFor="all">Tous</label>
-                                    </div>
-                                    <div>
-                                        <input
-                                            className='mr-2'
-                                            type="radio"
-                                            name="sexe"
-                                            id="M"
-                                            value="M"
-                                            onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
-                                            checked={params?.get('perp_sex') === 'M'}
-                                        />
-                                        <label htmlFor="M">Homme</label>
-                                    </div>
+                                    <Radio
+                                        name='gender'
+                                        value='all'
+                                        title='All'
+                                        onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
+                                        checked={params?.get('perp_sex') === 'all' || !params?.get('perp_sex')}
+                                    />
 
-                                    <div>
-                                        <input
-                                            className='mr-2'
-                                            type="radio"
-                                            name="sexe"
-                                            id="F"
-                                            value="F"
-                                            onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
-                                            checked={params?.get('perp_sex') === 'F'}
-                                        />
-                                        <label htmlFor="F">Femme</label>
-                                    </div>
+                                    <Radio
+                                        name='gender'
+                                        value='M'
+                                        title='Male'
+                                        onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
+                                        checked={params?.get('perp_sex') === 'M'}
+                                    />
+
+                                    <Radio
+                                        name='gender'
+                                        value='F'
+                                        title='Female'
+                                        onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
+                                        checked={params?.get('perp_sex') === 'F'}
+                                    />
+
                                 </div>
                             </div>
                             <div className='flex flex-col gap-2'>
@@ -158,7 +141,7 @@ const page = () => {
                                     id="type"
                                     onChange={({ target: { value } }) => onChange(value, 'age_group')}
                                     value={params?.get('age_group') || 'all'}
-                                    className='w-full p-2 border'
+                                    className='w-full p-2 border shadow-lg text-slate-600'
                                 >
                                     <option value="all">All</option>
                                     {

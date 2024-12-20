@@ -16,7 +16,7 @@ class CustomizedAxisTick extends PureComponent {
 
         return (
             <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)" className='text-xs bg-slate-600'>
+                <text x={0} y={0} dy={16} textAnchor="end" fill="#fff" transform="rotate(-35)" className='text-xs text-white'>
                     {payload.value}
                 </text>
             </g>
@@ -46,8 +46,8 @@ const BarChart = ({ data, children, ...props }: BarChartProps) => {
                 {...props}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" interval={0} height={150} tick={<CustomizedAxisTick />} />
-                <YAxis />
+                <XAxis dataKey="name" interval={0} height={150} tick={<CustomizedAxisTick />} stroke='#fff' color='#fff' />
+                <YAxis stroke='#fff' />
                 <Tooltip />
                 <Legend height={50} align='center' margin={{ top: 1000, left: 0, right: 0, bottom: 0 }} />
 

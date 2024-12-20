@@ -12,7 +12,9 @@ const OffenseBySex = () => {
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/statistics/getCount?type=perp_sex${query ? `&${query}` : ''}`)
             .then((response) => response.json())
-            .then(({ data }) => setData(data))
+            .then(({ data }) => {
+                setData(data)
+            })
             .catch((error) => enqueueSnackbar(error, { variant: 'error' }));
     }, [query, enqueueSnackbar]);
 

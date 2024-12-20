@@ -1,6 +1,5 @@
 'use client';
 
-import Link from "next/link";
 import Offense from "./views/Offense";
 import OffenseBySex from "./views/OffenseBySex";
 import OffenseByAgeGroup from "./views/OffenseByAgeGroup";
@@ -42,20 +41,24 @@ const page = () => {
 
     return (
         <SnackbarProvider>
-            <div className='w-full h-screen'>
-                <div className='relative flex justify-between items-center'>
-                    <Link href={'/'} className='w-1/5 top-0 left-0 p-4'>
-                        Retour
-                    </Link>
-                    <h1 className='w-3/5 text-center text-2xl font-semibold p-4'>Statistiques</h1>
-                    <Link href={'/map'} className='w-1/5  text-end top-0 right-0 p-4'>
-                        Map
-                    </Link>
-                </div>
+            <div className='w-full bg-slate-500 text-white'>
                 <div className="p-4">
-
                     <div className="w-full mx-auto flex flex-col justify-center gap-4">
                         <h3 className="text-left text-lg font-semibold">Offences type by age group</h3>
+                        <div>
+                            <label htmlFor="" className="mr-2">Filter by gender</label>
+                            <select
+                                name="perp_sex"
+                                id=""
+                                onChange={({ target: { value } }) => onChange(value, 'perp_sex')}
+                                value={params?.get('perp_sex') || 'all'}
+                                className="w-1/4 mx-auto p-2 border text-slate-600"
+                            >
+                                <option value="all">All</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
                         <Offense />
                     </div>
                     <div className="py-4">
@@ -63,7 +66,7 @@ const page = () => {
                         <select
                             id="offenses"
                             name="offenses"
-                            className="w-1/4 mx-auto p-2 border"
+                            className="w-1/4 mx-auto p-2 border text-slate-600"
                             onChange={({ target: { value } }) => onChange(value, 'ofns_desc')}
                             value={params?.get('ofns_desc') || 'all'}
                         >
@@ -77,7 +80,7 @@ const page = () => {
                     </div>
                     <div className="w-full flex justify-between gap-4 mx-auto">
                         <div>
-                            <Title>Number of total offences by sex</Title>
+                            <Title>Number of total offences by gender</Title>
                             <OffenseBySex />
                         </div>
                         <div>
