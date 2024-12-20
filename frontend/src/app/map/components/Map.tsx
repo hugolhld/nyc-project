@@ -143,14 +143,16 @@ export default function MapComponent({ dataToDisplay }: { dataToDisplay: string 
         });
 
         socket.on('new_arrest', (data: MapMarker) => {
-            setMapMarkers((prevMarkers) => [...prevMarkers, { arrest_key: data.arrest_key, age_group: data.age_group, arrest_date: new Date(data.arrest_date), position: [data.latitude, data.longitude], perp_sex: data.perp_sex, ofns_desc: data.ofns_desc }]);
             enqueueSnackbar('Nouvelle arrestation !', { variant: 'success' });
+
+            if (query?.get('ofns_desc') && query.get('ofns_desc') !== data.ofns_desc) return;
+            setMapMarkers((prevMarkers) => [...prevMarkers, { arrest_key: data.arrest_key, age_group: data.age_group, arrest_date: new Date(data.arrest_date), position: [data.latitude, data.longitude], perp_sex: data.perp_sex, ofns_desc: data.ofns_desc }]);
         });
 
         return () => {
             socket.disconnect();
         };
-    }, [enqueueSnackbar]);
+    }, [enqueueSnackbar, query]);
 
     
 
@@ -178,7 +180,7 @@ export default function MapComponent({ dataToDisplay }: { dataToDisplay: string 
                                 <p>Offense type: {ofns_desc}</p>
                                 <p>Date: {arrest_date.toUTCString()}</p>
                                 <p>Age: {age_group}</p>
-                                <p>Sex: {perp_sex}</p>
+                                <p>Gender: {perp_sex}</p>
                             </div>
                         </Popup>
                     </Marker>

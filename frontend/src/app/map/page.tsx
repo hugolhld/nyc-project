@@ -29,8 +29,6 @@ const page = () => {
     const router = useRouter();
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const params = useSearchParams();
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    // const { enqueueSnackbar } = useSnackbar();
 
     const onChange = (value: string, type: string) => {
 
@@ -50,7 +48,7 @@ const page = () => {
         <SnackbarProvider>
             <div className='w-full h-full bg-white-500 '>
                 <div className='w-full h-full flex'>
-                    <div className='w-4/5 shadow-lg'>
+                    <div className='w-4/5 pt-4 pl-4 pb-4 shadow-lg'>
                         <MapComponent dataToDisplay={dataToDisplay} />
                     </div>
                     <div className='w-1/5 flex flex-col gap-4 p-4'>
