@@ -16,7 +16,7 @@ class CustomizedAxisTick extends PureComponent {
 
         return (
             <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={16} textAnchor="end" fill="#fff" transform="rotate(-35)" className='text-xs text-white'>
+                <text x={0} y={0} dy={16} textAnchor="end" fill="#fff" transform="rotate(-35)" className='text-xs '>
                     {payload.value}
                 </text>
             </g>

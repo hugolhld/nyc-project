@@ -3,15 +3,13 @@
 import MapComponent from './components/Map'
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ofns_desc } from '@/utils/utils';
-// import { useSnackbar } from 'notistack';
-import Link from 'next/link';
 import { SnackbarProvider } from 'notistack';
 import { useState } from 'react';
 
-const Radio = ({ name, value, onChange, checked, title }) => (
+const Radio = ({ name, value, onChange, checked, title }: {name: string, value: string, onChange: (event: React.ChangeEvent<HTMLInputElement>) => void, checked: boolean, title: string }) => (
     <div className='flex gap-1 items-center'>
         <input
-            className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+            className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300'
             type="radio"
             name={name}
             id={value}
@@ -50,7 +48,7 @@ const page = () => {
 
     return (
         <SnackbarProvider>
-            <div className='w-full h-full bg-slate-500 text-white'>
+            <div className='w-full h-full bg-white-500 '>
                 <div className='w-full h-full flex'>
                     <div className='w-4/5 shadow-lg'>
                         <MapComponent dataToDisplay={dataToDisplay} />

@@ -12,6 +12,7 @@ Welcome in my interactive map and statistics project based on Leaflet, Recharts 
 - [Recharts](https://recharts.org/en-US/)
 - [Leaflet](https://react-leaflet.js.org/)
 - [MapBox](https://www.mapbox.com/)
+- [Notistack](https://notistack.com/)
 - [Socket.io](https://socket.io/)
 - [Docker](https://www.docker.com/)
 - [PostGreSQL](https://www.postgresql.org/)

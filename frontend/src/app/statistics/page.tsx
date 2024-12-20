@@ -41,7 +41,7 @@ const page = () => {
 
     return (
         <SnackbarProvider>
-            <div className='w-full bg-slate-500 text-white'>
+            <div className='w-full bg-white-500 '>
                 <div className="p-4">
                     <div className="w-full mx-auto flex flex-col justify-center gap-4">
                         <h3 className="text-left text-lg font-semibold">Offences type by age group</h3>

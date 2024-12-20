@@ -18,7 +18,7 @@ const Header = () => {
     console.log(pathname)
 
     return (
-        <header className='bg-slate-600 p-4 flex justify-between items-center text-white shadow-lg'>
+        <header className='bg-white-600 p-4 flex justify-between items-center  shadow-lg'>
             <h1 className='text-3xl text-center font-semibold'>
                 <Link href='/' onClick={() => setPathname('/')}>NYC Project</Link>
             </h1>
